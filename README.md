@@ -13,7 +13,7 @@ during writes, so that will essentially cause very noticeable downtime or a race
 delays the updates if a single sqlite file was used.
 
 So instead what gglsbl-rest does is to keep two sets of sqlite databases, and while one is
-being used by the REST service the other is updated regularly by a scheduled job in chron. 
+being used by the REST service the other is updated regularly by a chron job. 
 Once the update on done on the secondary sqlite file, it starts being used by the REST service
 for any new requests.
 
@@ -47,20 +47,20 @@ docker run -e GSB_API_KEY=<your API key> gglsbl-rest -p 127.0.0.1:5000:5000 -i
 
 This will cause the service to listen on port 5000 of the host machine. Please realize that
 when the service first starts it downloads a new local partial hash database from scratch 
-before starting the REST service, so it might take several minutes to become available. By
-starting it in interactive mode as we recommend above you can read the log output to notice
-when the gunicorn processes start.
+before starting the REST service. So it might take several minutes to become available. By
+starting it in interactive mode you can read the log output to notice when the gunicorn 
+processes start.
 
 ## Querying the REST Service
 
-The REST service will respond to queries for `/v1/gglsbl/lookup/<URL>`. Make sure you 
+The REST service will respond to queries for `/gglsbl/v1/lookup/<URL>`. Make sure you 
 [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the URL you are querying.
-If no sign of maliciousness is found, the servie will return with a 404 status. If it does,
+If no sign of maliciousness is found, the service will return with a 404 status. Otherwise,
 a 200 response with a JSON body is returned to describe it.
 
 Here's an example query and response:
 ```bash
-$ curl "http://127.0.0.1:5000/gglsbl/lookup/http%3A%2F%2Ftestsafebrowsing.appspot.com%2Fapiv4%2FANY_PLATFORM%2FSOCIAL_ENGINEERING%2FURL%2F"
+$ curl "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Ftestsafebrowsing.appspot.com%2Fapiv4%2FANY_PLATFORM%2FSOCIAL_ENGINEERING%2FURL%2F"
 {
   "matches": [
     {
@@ -93,10 +93,10 @@ $ curl "http://127.0.0.1:5000/gglsbl/lookup/http%3A%2F%2Ftestsafebrowsing.appspo
 }
 ```
 
-There' an additional `/v1/gglsbl/status` URL that you can access to check if the service is
+There' an additional `/gglsbl/v1/status` URL that you can access to check if the service is
 running and also get some indication of how old the currently sqlite database is:
 ```bash
-$ curl "http://127.0.0.1:5000/gglsbl/status"
+$ curl "http://127.0.0.1:5000/gglsbl/v1/status"
 {
   "alternatives": [
     {
