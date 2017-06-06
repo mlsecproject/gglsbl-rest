@@ -34,7 +34,7 @@ of detected cores plus one.
 
 ## Building and Running
 
-Close this repository to your machine and make it the default directory. Then, build the
+Clone this repository to your machine and make it the default directory. Then, build the
 docker image with the following command:
 ```bash
 docker build -t gglsbl-rest .
