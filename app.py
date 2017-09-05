@@ -11,6 +11,22 @@ from dbfile import *
 app = Flask("gglsbl-rest")
 gsb_api_key = environ['GSB_API_KEY']
 environment = environ.get('ENVIRONMENT', 'prod').lower()
+max_retries = 3
+
+
+def _lookup(url, active_name, retry=max_retries):
+    try:
+        sbl = SafeBrowsingList(gsb_api_key, active_name, True)
+        resp = sbl.lookup_url(url)
+    except Exception:
+        if retry > 0:
+            # sleep before calling again. increase timeout with every run
+            time.sleep(0.1 * (max_retries - retry + 1))
+            # recursively retry in case of error
+            resp = _lookup(url, active_name, retry=retry-1)
+        else:
+            raise
+    return resp
 
 
 @app.route('/gglsbl/lookup/<path:url>', methods=['GET'])
@@ -25,9 +41,8 @@ def app_lookup(url):
     if not active or not active['mtime']:
         abort(503)
     try:
-        sbl = SafeBrowsingList(gsb_api_key, active['name'], True)
-        resp = sbl.lookup_url(url)
-    except:
+        resp = _lookup(url, active['name'])
+    except Exception:
         app.logger.exception("exception handling [" + url + "]")
         abort(500)
     else:
