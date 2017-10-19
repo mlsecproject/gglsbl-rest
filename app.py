@@ -11,12 +11,41 @@ from dbfile import *
 app = Flask("gglsbl-rest")
 gsb_api_key = environ['GSB_API_KEY']
 environment = environ.get('ENVIRONMENT', 'prod').lower()
+max_retries = int(environ.get('MAX_RETRIES', "3"))
 
 # Keep last query object so we can try to re-use it across requests
 sbl = None
 last_api_key = None
 last_name = None
 last_ctime = None
+
+
+def _lookup(url, api_key, retry=1):
+    # find out which is the active database
+    active = get_active()
+    if not active or not active['mtime']:
+        abort(503)
+
+    # perform lookup
+    global sbl, last_api_key, last_name, last_ctime
+    try:
+        if api_key != last_api_key or active['name'] != last_name or active['ctime'] != last_ctime:
+            app.logger.info('re-opening database')
+            sbl = SafeBrowsingList(api_key, active['name'], True)
+            last_api_key = api_key
+            last_name = active['name']
+            last_ctime = active['ctime']
+        return sbl.lookup_url(url)
+    except:
+        app.logger.exception("exception handling [" + url + "]")
+        if retry >= max_retries:
+            sbl = None
+            last_api_key = None
+            last_name = None
+            last_ctime = None
+            abort(500)
+        else:
+            return _lookup(url, api_key, retry + 1)
 
 
 @app.route('/gglsbl/lookup/<path:url>', methods=['GET'])
@@ -32,35 +61,14 @@ def app_lookup(url):
         app.logger.error('no API key to use')
         abort(401)
 
-    # find out which is the active database
-    active = get_active()
-    if not active or not active['mtime']:
-        abort(503)
-
     # look up URL
-    global sbl, last_api_key, last_name, last_ctime
-    try:
-        if api_key != last_api_key or active['name'] != last_name or active['ctime'] != last_ctime:
-            app.logger.info('re-opening database')
-            sbl = SafeBrowsingList(api_key, active['name'], True)
-            last_api_key = api_key
-            last_name = active['name']
-            last_ctime = active['ctime']
-        resp = sbl.lookup_url(url)
-    except:
-        app.logger.exception("exception handling [" + url + "]")
-        sbl = None
-        last_api_key = None
-        last_name = None
-        last_ctime = None
-        abort(500)
+    resp = _lookup(url, api_key)
+    if resp:
+        matches = [{'threat': x.threat_type, 'platform': x.platform_type,
+                    'threat_entry': x.threat_entry_type} for x in resp]
+        return jsonify({'url': url, 'matches': matches})
     else:
-        if resp:
-            matches = [{'threat': x.threat_type, 'platform': x.platform_type,
-                        'threat_entry': x.threat_entry_type} for x in resp]
-            return jsonify({'url': url, 'matches': matches})
-        else:
-            abort(404)
+        abort(404)
 
 
 @app.route('/gglsbl/status', methods=['GET'])
