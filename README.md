@@ -27,10 +27,13 @@ not significantly improved by using a volume, but YMMV.
 The configuration of the REST service can be done using the following environment variables:
 
 * `GSB_API_KEY` is *required* and should contain your 
-[Google Safe Browsing v4 API key](https://developers.google.com/safe-browsing/v4/get-started);
+[Google Safe Browsing v4 API key](https://developers.google.com/safe-browsing/v4/get-started).
 
 * `WORKERS` controls how many gunicorn workers to instantiate. Defaults to twice the number
 of detected cores plus one.
+
+* `MAX_RETRIES` controls how many times the service should retry performing the request if
+an error occurs, defaults to 3.
 
 ## Building and Running
 
@@ -94,7 +97,7 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Ftestsafebrowsing.app
 ```
 
 There' an additional `/gglsbl/v1/status` URL that you can access to check if the service is
-running and also get some indication of how old the currently sqlite database is:
+running and also get some indication of how old the current sqlite database is:
 ```bash
 $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
 {
