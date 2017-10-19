@@ -12,6 +12,12 @@ app = Flask("gglsbl-rest")
 gsb_api_key = environ['GSB_API_KEY']
 environment = environ.get('ENVIRONMENT', 'prod').lower()
 
+# Keep last query object so we can try to re-use it across requests
+sbl = None
+last_api_key = None
+last_name = None
+last_ctime = None
+
 
 @app.route('/gglsbl/lookup/<path:url>', methods=['GET'])
 @app.route('/gglsbl/v1/lookup/<path:url>', methods=['GET'])
@@ -20,15 +26,33 @@ def app_lookup(url):
     if not isinstance(url, (str, unicode)):
         abort(400)
 
-    # resolve entries
+    # find out which API key to use
+    api_key = request.headers.get('x-gsb-api-key', gsb_api_key)
+    if not api_key:
+        app.logger.error('no API key to use')
+        abort(401)
+
+    # find out which is the active database
     active = get_active()
     if not active or not active['mtime']:
         abort(503)
+
+    # look up URL
+    global sbl, last_api_key, last_name, last_ctime
     try:
-        sbl = SafeBrowsingList(gsb_api_key, active['name'], True)
+        if api_key != last_api_key or active['name'] != last_name or active['ctime'] != last_ctime:
+            app.logger.info('re-opening database')
+            sbl = SafeBrowsingList(api_key, active['name'], True)
+            last_api_key = api_key
+            last_name = active['name']
+            last_ctime = active['ctime']
         resp = sbl.lookup_url(url)
     except:
         app.logger.exception("exception handling [" + url + "]")
+        sbl = None
+        last_api_key = None
+        last_name = None
+        last_ctime = None
         abort(500)
     else:
         if resp:
