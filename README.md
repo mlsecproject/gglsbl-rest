@@ -36,8 +36,10 @@ The configuration of the REST service can be done using the following environmen
 * `WORKERS` controls how many gunicorn workers to instantiate. Defaults to twice the number
 of detected cores plus one.
 
+* `TIMEOUT` controls how many seconds before gunicorn times out on a request. Defaults to 120.
+
 * `MAX_RETRIES` controls how many times the service should retry performing the request if
-an error occurs, defaults to 3.
+an error occurs. Defaults to 3.
 
 ## Building and Running
 
