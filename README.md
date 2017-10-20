@@ -51,7 +51,7 @@ docker pull mlsecproject/gglsbl-rest
 
 Then, you can run a new container based on that image by executing, for example:
 ```bash
-docker run -e GSB_API_KEY=<your API key> mlsecproject/gglsbl-rest -p 127.0.0.1:5000:5000 -i
+docker run -e GSB_API_KEY=<your API key> -p 127.0.0.1:5000:5000 -i mlsecproject/gglsbl-rest 
 ```
 
 This will cause the service to listen on port 5000 of the host machine. Please realize that
