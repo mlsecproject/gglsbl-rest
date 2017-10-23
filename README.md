@@ -133,7 +133,7 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
 
 * [Niddel](https://www.niddel.com) uses gglsbl as an enrichment in its Magnet product;
 
-* [neonknight](https://github.com/neonknight) reports gglsbl-rest is used as  abridge between 
+* [neonknight](https://github.com/neonknight) reports gglsbl-rest is used as a bridge between 
 the [fuglu mail filter engine](https://github.com/gryphius/fuglu) and Google Safebrowsing API
 through a [plug-in](https://github.com/gryphius/fuglu-extra-plugins/blob/master/safebrowsing/gglsbl.py).
 
