@@ -135,7 +135,7 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
 
 * [neonknight](https://github.com/neonknight) reports gglsbl-rest is used as  abridge between 
 the [fuglu mail filter engine](https://github.com/gryphius/fuglu) and Google Safebrowsing API
-through a [plug-in](using https://github.com/gryphius/fuglu-extra-plugins/blob/master/safebrowsing/gglsbl.py).
+through a [plug-in](https://github.com/gryphius/fuglu-extra-plugins/blob/master/safebrowsing/gglsbl.py).
 
 If your project or coompany are using gglsbl-rest and would like to be listed here, open an 
 issue and we'll include you on this list.
