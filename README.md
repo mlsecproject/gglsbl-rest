@@ -128,3 +128,14 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
   "environment": "prod"
 }
 ```
+
+## Who's using gglsbl-rest
+
+* [Niddel](https://www.niddel.com) uses gglsbl as an enrichment in its Magnet product;
+
+* [neonknight](https://github.com/neonknight) reports gglsbl-rest is used as  abridge between 
+the [fuglu mail filter engine](https://github.com/gryphius/fuglu) and Google Safebrowsing API
+through a [plug-in](using https://github.com/gryphius/fuglu-extra-plugins/blob/master/safebrowsing/gglsbl.py).
+
+If your project or coompany are using gglsbl-rest and would like to be listed here, open an 
+issue and we'll include you on this list.
