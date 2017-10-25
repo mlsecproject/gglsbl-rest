@@ -28,8 +28,7 @@ The configuration of the REST service can be done using the following environmen
 
 ## Building and Running
 
-Download the latest automated build from
-[Docker Hub](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) as follows:
+Download the latest automated build from [Docker Hub](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) as follows:
 ```bash
 docker pull mlsecproject/gglsbl-rest
 ```
@@ -39,18 +38,12 @@ Then, you can run a new container based on that image by executing, for example:
 docker run -e GSB_API_KEY=<your API key> -p 127.0.0.1:5000:5000 -i mlsecproject/gglsbl-rest 
 ```
 
-This will cause the service to listen on port 5000 of the host machine. Please realize that
-when the service first starts it downloads a new local partial hash database from scratch 
-before starting the REST service. So it might take several minutes to become available. By
-starting it in interactive mode you can read the log output to notice when the gunicorn 
+This will cause the service to listen on port 5000 of the host machine. Please realize that when the service first starts it downloads a new local partial hash database from scratch before starting the REST service. So it might take several minutes to become available. By starting it in interactive mode you can read the log output to notice when the gunicorn 
 processes start.
 
 ## Querying the REST Service
 
-The REST service will respond to queries for `/gglsbl/v1/lookup/<URL>`. Make sure you 
-[percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the URL you are querying.
-If no sign of maliciousness is found, the service will return with a 404 status. Otherwise,
-a 200 response with a JSON body is returned to describe it.
+The REST service will respond to queries for `/gglsbl/v1/lookup/<URL>`. Make sure you [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the URL you are querying. If no sign of maliciousness is found, the service will return with a 404 status. Otherwise, a 200 response with a JSON body is returned to describe it.
 
 Here's an example query and response:
 ```bash
@@ -87,8 +80,7 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Ftestsafebrowsing.app
 }
 ```
 
-There' an additional `/gglsbl/v1/status` URL that you can access to check if the service is
-running and also get some indication of how old the current sqlite database is:
+There' an additional `/gglsbl/v1/status` URL that you can access to check if the service is running and also get some indication of how old the current sqlite database is:
 ```bash
 $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
 {
@@ -118,10 +110,6 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
 
 * [Niddel](https://www.niddel.com) uses gglsbl-rest as an enrichment in its Magnet product;
 
-* [neonknight](https://github.com/neonknight) reports gglsbl-rest is used as a bridge between 
-the [fuglu mail filter engine](https://github.com/gryphius/fuglu) and Google Safebrowsing API
-through a [plug-in](https://github.com/gryphius/fuglu-extra-plugins/blob/master/safebrowsing/gglsbl.py).
+* [neonknight](https://github.com/neonknight) reports gglsbl-rest is used as a bridge between the [fuglu mail filter engine](https://github.com/gryphius/fuglu) and Google Safebrowsing API through a [plug-in](https://github.com/gryphius/fuglu-extra-plugins/blob/master/safebrowsing/gglsbl.py).
 
-If your project or company are using gglsbl-rest and you would like them to be listed here, 
-please open a [GitHub issue](https://github.com/mlsecproject/gglsbl-rest/issues) and we'll 
-include you.
+If your project or company are using gglsbl-rest and you would like them to be listed here, please open a [GitHub issue](https://github.com/mlsecproject/gglsbl-rest/issues) and we'll include you.
