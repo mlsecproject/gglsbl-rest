@@ -1,45 +1,30 @@
-[![docker stars](https://img.shields.io/docker/stars/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/)
-[![docker pulls](https://img.shields.io/docker/pulls/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/)
-[![docker build status](https://img.shields.io/docker/build/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/)
+[![docker stars](https://img.shields.io/docker/stars/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) [![docker pulls](https://img.shields.io/docker/pulls/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) [![docker build status](https://img.shields.io/docker/build/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/)
 
 # gglsbl-rest
 
-This repository implements a Dockerized REST service to look up URLs in Google Safe Browsing 
-v4 API based on [gglsbl](https://github.com/afilipovich/gglsbl) using 
-[Flask](https://pypi.python.org/pypi/Flask) and 
-[gunicorn](https://pypi.python.org/pypi/gunicorn).
+This repository implements a Dockerized REST service to look up URLs in Google Safe Browsing v4 API based on [gglsbl](https://github.com/afilipovich/gglsbl) using [Flask](https://pypi.python.org/pypi/Flask) and [gunicorn](https://pypi.python.org/pypi/gunicorn).
 
 ## Basic Design
 
-The main challenge with running gglsbl in a REST service is that the process of
-updating the local sqlite database takes several minutes. Plus, the sqlite database is locked
-during writes, so that will essentially cause very noticeable downtime or a race condition that
-delays the updates if a single sqlite file was used.
+The main challenge with running gglsbl in a REST service is that the process of updating the local sqlite database takes several minutes. Plus, the sqlite database is locked during writes, so that will essentially cause very noticeable downtime or a race condition that delays the updates if a single sqlite file was used.
 
-So instead what gglsbl-rest does is to keep two sets of sqlite databases, and while one is
-being used by the REST service the other is updated regularly by a chron job. 
-Once the update on done on the secondary sqlite file, it starts being used by the REST service
-for any new requests.
+So instead what gglsbl-rest does is to keep two sets of sqlite databases, and while one is being used by the REST service the other is updated regularly by a chron job. Once the update on done on the secondary sqlite file, it starts being used by the REST service for any new requests.
 
-The current implementation does not use [volumes](https://docs.docker.com/engine/tutorials/dockervolumes/)
-to store the sqlite files, but it could very easily be made to do so. I have found that both
-running locally on my laptop and on [AWS ECS](https://aws.amazon.com/ecs/) performance was
-not significantly improved by using a volume, but YMMV.
+The current implementation does not use [volumes](https://docs.docker.com/engine/tutorials/dockervolumes/) to store the sqlite files, but it could very easily be made to do so. I have found that both running locally on my laptop and on [AWS ECS](https://aws.amazon.com/ecs/) performance was not significantly improved by using a volume, but YMMV.
 
 ## Environment Variables
 
 The configuration of the REST service can be done using the following environment variables:
 
-* `GSB_API_KEY` is *required* and should contain your 
-[Google Safe Browsing v4 API key](https://developers.google.com/safe-browsing/v4/get-started).
+* `GSB_API_KEY` is *required* and should contain your [Google Safe Browsing v4 API key](https://developers.google.com/safe-browsing/v4/get-started).
 
-* `WORKERS` controls how many gunicorn workers to instantiate. Defaults to twice the number
-of detected cores plus one.
+* `WORKERS` controls how many gunicorn workers to instantiate. Defaults to twice the number of detected cores plus one.
 
 * `TIMEOUT` controls how many seconds before gunicorn times out on a request. Defaults to 120.
 
-* `MAX_RETRIES` controls how many times the service should retry performing the request if
-an error occurs. Defaults to 3.
+* `MAX_REQUESTS` controls how many requests a worker can server before it is restarted, as per the [max-requests gunicorn setting](http://docs.gunicorn.org/en/stable/settings.html#max-requests). Default to restarting worker after it serves 16,384 requests.
+
+* `MAX_RETRIES` controls how many times the service should retry performing the request if an error occurs. Defaults to 3.
 
 ## Building and Running
 

@@ -22,4 +22,4 @@ RUN apk update && \
 EXPOSE 5000
 
 # Perform initial DB update, start crond for regular updates then start app.
-ENTRYPOINT python update.py && crond && gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
+ENTRYPOINT python update.py && crond -L /proc/1/fd/1 && gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
