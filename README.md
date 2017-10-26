@@ -10,7 +10,7 @@ The main challenge with running gglsbl in a REST service is that the process of 
 
 So instead what gglsbl-rest does is to keep two sets of sqlite databases, and while one is being used by the REST service the other is updated regularly by a chron job. Once the update on done on the secondary sqlite file, it starts being used by the REST service for any new requests.
 
-The current implementation does not use [volumes](https://docs.docker.com/engine/tutorials/dockervolumes/) to store the sqlite files, but it could very easily be made to do so. I have found that both running locally on my laptop and on [AWS ECS](https://aws.amazon.com/ecs/) performance was not significantly improved by using a volume, but YMMV.
+In production, you might want to mount `/root/gglsbl-rest/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for dramatically improved performance. Recommended size is 4 gigabytes to accommodate the worst case scenario of two full databases on disk at once during the update process.
 
 ## Environment Variables
 
@@ -33,9 +33,9 @@ Then, you can run the latest automated build from [Docker Hub](https://hub.docke
 docker run -e GSB_API_KEY=<your API key> -p 127.0.0.1:5000:5000 mlsecproject/gglsbl-rest 
 ```
 
-This will cause the service to listen on port 5000 of the host machine. Please realize that when the service first starts it downloads a new local partial hash database from scratch before starting the REST service. So it might take several minutes to become available. You can run `docker logs --follow <container name/ID>` to tail the output if necessary.
+This will cause the service to listen on port 5000 of the host machine. Please realize that when the service first starts it downloads a new local partial hash database from scratch before starting the REST service. So it might take several minutes to become available. 
 
-In production, you might want to mount `/root/gglsbl-rest/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for dramatically improved performance. Recommended size is 4 gigabytes to accommodate the worst case scenario of two full databases on disk at once during the update process.
+You can run `docker logs --follow <container name/ID>` to tail the output and determine when the gunicorn workers start, if necessary.
 
 ## Querying the REST Service
 
