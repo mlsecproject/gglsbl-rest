@@ -6,9 +6,9 @@ This repository implements a Dockerized REST service to look up URLs in Google S
 
 ## Basic Design
 
-The main challenge with running gglsbl in a REST service is that the process of updating the local sqlite database takes several minutes. Plus, the sqlite database is locked during writes, so that will essentially cause very noticeable downtime or a race condition that delays the updates if a single sqlite file was used.
+The main challenge with running gglsbl in a REST service is that the process of updating the local sqlite database takes several minutes. Plus, the sqlite database is locked during writes, so that would essentially cause very noticeable downtime or a race condition that delays the updates if a single sqlite file was used.
 
-So instead what gglsbl-rest does is to keep two sets of sqlite databases, and while one is being used by the REST service the other is updated regularly by a chron job. Once the update on done on the secondary sqlite file, it starts being used by the REST service for any new requests.
+So instead what gglsbl-rest does is to keep two sets of sqlite databases. While one is being used by the REST service the other is updated regularly by a chron job. Once the update on done on the secondary sqlite file, it starts being used by the REST service for any new requests, and the inactive one is removed from disk.
 
 ## Environment Variables
 
