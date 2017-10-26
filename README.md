@@ -20,7 +20,11 @@ The configuration of the REST service can be done using the following environmen
 
 * `TIMEOUT` controls how many seconds before gunicorn times out on a request. Defaults to 120.
 
-* `MAX_REQUESTS` controls how many requests a worker can server before it is restarted, as per the [max-requests gunicorn setting](http://docs.gunicorn.org/en/stable/settings.html#max-requests). Default to restarting worker after it serves 16,384 requests.
+* `MAX_REQUESTS` controls how many requests a worker can server before it is restarted, as per the [max_requests gunicorn setting](http://docs.gunicorn.org/en/stable/settings.html#max-requests). Default to restarting worker after it serves 16,384 requests.
+
+* `LIMIT_REQUEST_LINE` controls the maximum size of the HTTP request line (operation, protocol version, URI and query parameters), as per the [limit_request_line gunicorn setting](http://docs.gunicorn.org/en/stable/settings.html#limit-request-line) setting. Defaults to 8190, set to 0 to allow any length.
+
+* `KEEPALIVE` controls how long a persistent connection can be idle before it is closed, as per the [keepalive gunicorn setting](http://docs.gunicorn.org/en/stable/settings.html#keepalive) setting. Defaults to 60 seconds.
 
 * `MAX_RETRIES` controls how many times the service should retry performing the request if an error occurs. Defaults to 3.
 

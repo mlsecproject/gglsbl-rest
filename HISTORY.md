@@ -1,5 +1,9 @@
 # gglsbl-rest
 
+## v1.3.0 (2017-10-26)
+- Added environment variable KEEPALIVE to control persistent connection idle period;
+- Added environment variable LIMIT_REQUEST_LINE to increase the default gunicorn maximum HTTP request line size, since we embed full URLs into our URI.
+
 ## v1.2.0 (2017-10-25)
 - Updated logging configuration so that even background tasks write to Docker logs;
 - Define regular recycling of gunicorn workers as inspired by https://github.com/amrael/gglsbl-rest/commit/0fd51f17ee879c736387eeb93512a1d11223a68c.
