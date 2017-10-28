@@ -1,5 +1,9 @@
 # gglsbl-rest
 
+## v1.3.1 (2017-10-28)
+- Revert to gglsbl 1.4.5 to avoid exceptions on queries as per https://github.com/afilipovich/gglsbl/issues/28;
+- Delete SafeBrowsingList object after database update to ensure sqlite connection is closed before moving the database file.
+
 ## v1.3.0 (2017-10-26)
 - Added environment variable KEEPALIVE to control persistent connection idle period;
 - Added environment variable LIMIT_REQUEST_LINE to increase the default gunicorn maximum HTTP request line size, since we embed full URLs into our URI.

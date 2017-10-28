@@ -44,6 +44,7 @@ def update_hash_prefix_cache():
         logger.info('downloading database to ' + tmp_file)
         sbl = SafeBrowsingList(gsb_api_key, tmp_file, True)
         sbl.update_hash_prefix_cache()
+        del sbl
         logger.info("finished creating " + tmp_file)
 
         # rename to inactive file name
