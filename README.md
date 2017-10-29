@@ -16,7 +16,7 @@ The configuration of the REST service can be done using the following environmen
 
 * `GSB_API_KEY` is *required* and should contain your [Google Safe Browsing v4 API key](https://developers.google.com/safe-browsing/v4/get-started).
 
-* `WORKERS` controls how many gunicorn workers to instantiate. Defaults to twice the number of detected cores plus one.
+* `WORKERS` controls how many gunicorn workers to instantiate. Defaults to twice the number of detected cores plus one, which is a very conservative value. You'll probably want to increase this to 16 processes per core or more in a production environment.
 
 * `TIMEOUT` controls how many seconds before gunicorn times out on a request. Defaults to 120.
 
