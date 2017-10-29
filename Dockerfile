@@ -1,4 +1,4 @@
-FROM python:2.7-alpine
+FROM python:2.7-alpine3.6
 
 ## Create app directory
 RUN mkdir -p /root/gglsbl-rest/db
@@ -22,4 +22,4 @@ RUN apk update && \
 EXPOSE 5000
 
 # Perform initial DB update, start crond for regular updates then start app.
-ENTRYPOINT python update.py && crond -L /proc/1/fd/1 && gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
+ENTRYPOINT python update.py && crond -L /proc/1/fd/2 && gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app

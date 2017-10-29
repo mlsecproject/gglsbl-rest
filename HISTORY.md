@@ -1,5 +1,9 @@
 # gglsbl-rest
 
+## v1.3.2 (2017-10-29)
+- Use Alpine 3.6 instead of 3.4, since this moves us from sqlite 3.13 to 3.20.1 and seems to solve https://github.com/afilipovich/gglsbl/issues/28 with gglsbl 1.4.6;
+- Use gglsbl 1.4.6 again.
+
 ## v1.3.1 (2017-10-28)
 - Revert to gglsbl 1.4.5 to avoid exceptions on queries as per https://github.com/afilipovich/gglsbl/issues/28;
 - Delete SafeBrowsingList object after database update to ensure sqlite connection is closed before moving the database file.
