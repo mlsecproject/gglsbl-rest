@@ -66,6 +66,7 @@ def status_page():
     retval = {
         'environment': environment,
         'alternatives': [{
+            'active': True,
             'name': dbfile,
             'mtime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getmtime(dbfile))),
             'ctime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getctime(dbfile))),
