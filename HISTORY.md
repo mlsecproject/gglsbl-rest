@@ -1,5 +1,9 @@
 # gglsbl-rest
 
+## v1.4.0 (2017-10-30)
+- Use a single database in sqlite WAL mode (#10);
+- Default value of WORKERS is now 8 per detected CPU core plus one.
+
 ## v1.3.2 (2017-10-29)
 - Use Alpine 3.6 instead of 3.4, since this moves us from sqlite 3.13 to 3.20.1 and seems to solve https://github.com/afilipovich/gglsbl/issues/28 with gglsbl 1.4.6;
 - Use gglsbl 1.4.6 again.

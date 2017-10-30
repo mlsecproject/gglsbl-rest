@@ -1,48 +1,37 @@
 import logging.config
 import time
+from os import environ, path
 
 from flask import Flask, request, jsonify, abort
 from gglsbl import SafeBrowsingList
 from multiprocessing import cpu_count
 
-from dbfile import *
-
 # basic app configuration and options
 app = Flask("gglsbl-rest")
 gsb_api_key = environ['GSB_API_KEY']
+dbfile = path.join(environ.get('GSB_DB_DIR', '/tmp'), 'sqlite.db')
 environment = environ.get('ENVIRONMENT', 'prod').lower()
 max_retries = int(environ.get('MAX_RETRIES', "3"))
 
 # Keep last query object so we can try to re-use it across requests
 sbl = None
 last_api_key = None
-last_name = None
-last_ctime = None
 
 
 def _lookup(url, api_key, retry=1):
-    # find out which is the active database
-    active = get_active()
-    if not active or not active['mtime']:
-        abort(503)
-
     # perform lookup
-    global sbl, last_api_key, last_name, last_ctime
+    global sbl, last_api_key
     try:
-        if api_key != last_api_key or active['name'] != last_name or active['ctime'] != last_ctime:
+        if api_key != last_api_key:
             app.logger.info('re-opening database')
-            sbl = SafeBrowsingList(api_key, active['name'], True)
+            sbl = SafeBrowsingList(api_key, dbfile, True)
             last_api_key = api_key
-            last_name = active['name']
-            last_ctime = active['ctime']
         return sbl.lookup_url(url)
     except:
         app.logger.exception("exception handling [" + url + "]")
         if retry >= max_retries:
             sbl = None
             last_api_key = None
-            last_name = None
-            last_ctime = None
             abort(500)
         else:
             return _lookup(url, api_key, retry + 1)
@@ -74,18 +63,15 @@ def app_lookup(url):
 @app.route('/gglsbl/status', methods=['GET'])
 @app.route('/gglsbl/v1/status', methods=['GET'])
 def status_page():
-    retval = {'alternatives': get_alternatives(), 'environment': environment}
-    for i in range(len(retval['alternatives'])):
-        if retval['alternatives'][i]['mtime']:
-            retval['alternatives'][i]['mtime'] = time.strftime('%Y-%m-%dT%H:%M:%S%z',
-                                                               time.gmtime(retval['alternatives'][i]['mtime']))
-        if retval['alternatives'][i]['ctime']:
-            retval['alternatives'][i]['ctime'] = time.strftime('%Y-%m-%dT%H:%M:%S%z',
-                                                               time.gmtime(retval['alternatives'][i]['ctime']))
-        if path.isfile(retval['alternatives'][i]['name']):
-            retval['alternatives'][i]['size'] = path.getsize(retval['alternatives'][i]['name'])
-        else:
-            retval['alternatives'][i]['size'] = None
+    retval = {
+        'environment': environment,
+        'alternatives': [{
+            'name': dbfile,
+            'mtime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getmtime(dbfile))),
+            'ctime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getctime(dbfile))),
+            'size': path.getsize(dbfile)
+        }]
+    }
     return jsonify(retval)
 
 
