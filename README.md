@@ -6,9 +6,11 @@ This repository implements a Dockerized REST service to look up URLs in Google S
 
 ## Basic Design
 
-The main challenge with running gglsbl in a REST service is that the process of updating the local sqlite database takes several minutes. Plus, the sqlite database is locked during writes, so that would essentially cause very noticeable downtime or a race condition that delays the updates if a single sqlite file was used.
+The main challenge with running gglsbl in a REST service is that the process of updating the local sqlite database takes several minutes. Plus, the sqlite database is locked during writes by default, so that would essentially cause very noticeable downtime or a race condition.
 
-So instead what gglsbl-rest does is to keep two sets of sqlite databases. While one is being used by the REST service the other is updated regularly by a chron job. Once the update on done on the secondary sqlite file, it starts being used by the REST service for any new requests, and the inactive one is removed from disk.
+So what gglsbl-rest does since version 1.4.0 is to set the sqlite database to [write-ahead logging](https://sqlite.org/wal.html) mode so that readers and writers can work concurrently. A cron job runs every 30 minutes to update the database and then performs a [full checkpoint](https://sqlite.org/pragma.html#pragma_wal_checkpoint) to ensure readers have optimal performance.
+
+Versions before 1.4.0 maintained two sets of files on disk and switched between them, which is why the status endpoint has the output format it does. But the current approach has many advantages, as it reuses fresh downloaded data across updates and cached full hash data.
 
 ## Environment Variables
 
@@ -16,7 +18,7 @@ The configuration of the REST service can be done using the following environmen
 
 * `GSB_API_KEY` is *required* and should contain your [Google Safe Browsing v4 API key](https://developers.google.com/safe-browsing/v4/get-started).
 
-* `WORKERS` controls how many gunicorn workers to instantiate. Defaults to twice the number of detected cores plus one, which is a very conservative value. You'll probably want to increase this to 16 processes per core or more in a production environment.
+* `WORKERS` controls how many gunicorn workers to instantiate. Defaults to 8 times the number of detected cores plus one.
 
 * `TIMEOUT` controls how many seconds before gunicorn times out on a request. Defaults to 120.
 
@@ -39,7 +41,7 @@ This will cause the service to listen on port 5000 of the host machine. Please r
 
 You can run `docker logs --follow <container name/ID>` to tail the output and determine when the gunicorn workers start, if necessary.
 
-In production, you might want to mount `/root/gglsbl-rest/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for dramatically improved performance. Recommended size is 5+ gigabytes to accommodate the worst case scenario of two full databases on disk at once during the update process.
+In production, you might want to mount `/root/gglsbl-rest/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for improved performance. Recommended size is 4+ gigabytes, which is roughly twice of a freshly initialized database, but YMMV.
 
 ## Querying the REST Service
 
@@ -87,21 +89,12 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
   "alternatives": [
     {
       "active": true,
-      "ctime": "2017-06-05T05:08:29+0000",
-      "mtime": "2017-06-05T05:08:29+0000",
-      "name": "/root/gglsbl-rest/db/gsb_v4.a.db",
-      "size": 1592377344,
-      "switch": "a"
-    },
-    {
-      "active": false,
-      "ctime": null,
-      "mtime": null,
-      "name": "/root/gglsbl-rest/db/gsb_v4.b.db",
-      "size": null,
-      "switch": "b"
+      "ctime": "2017-10-30T20:20:55+0000", 
+      "mtime": "2017-10-30T20:20:55+0000", 
+      "name": "/root/gglsbl-rest/db/sqlite.db", 
+      "size": 2079985664
     }
-  ],
+  ], 
   "environment": "prod"
 }
 ```

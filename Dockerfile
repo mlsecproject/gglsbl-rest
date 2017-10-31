@@ -17,7 +17,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \
     rm -rf /root/.cache/ && \
-    crontab -l | { cat; echo "*/5   *   *   *   *   /usr/local/bin/python /root/gglsbl-rest/update.py"; } | crontab -
+    crontab -l | { cat; echo "*/30   *   *   *   *   /usr/local/bin/python /root/gglsbl-rest/update.py"; } | crontab -
 
 EXPOSE 5000
 

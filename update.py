@@ -1,58 +1,35 @@
 import logging.config
-import time
+from os import environ, path
 
 from gglsbl import SafeBrowsingList
-from os import remove, rename
 from pid.decorator import pidfile
-
-from dbfile import *
 
 # basic app configuration and options
 gsb_api_key = environ['GSB_API_KEY']
+dbfile = path.join(environ.get('GSB_DB_DIR', '/tmp'), 'sqlite.db')
 environment = environ.get('ENVIRONMENT', 'prod').lower()
 logger = logging.getLogger('update')
 JOURNAL = '.update-journal'
 
 
-def remove_inactive(inactive):
-    if path.isfile(inactive['name']):
-        logger.info('removing inactive file ' + inactive['name'])
-        remove(inactive['name'])
-    if path.isfile(inactive['name'] + JOURNAL):
-        logger.info('removing inactive file ' + inactive['name'] + JOURNAL)
-        remove(inactive['name'] + JOURNAL)
-
-
 # function that updates the hash prefix cache if necessary
 @pidfile(piddir='/tmp')
 def update_hash_prefix_cache():
-    active = get_active()
-    if active and active['ctime'] and active['mtime'] and min(active['ctime'], active['mtime']) >= (
-                time.time() - (30 * 60)):
-        # no need to update, active DB exists and is recent
-        logger.info('active database is fresh')
-        inactive = get_inactive()
-        # remove inactivate database if it exists to free up disk space
-        remove_inactive(inactive)
-    else:
-        # we need to update the inactive DB, so get its info and delete it
-        inactive = get_inactive()
-        remove_inactive(inactive)
+    logger.info('opening database at ' + dbfile)
+    sbl = SafeBrowsingList(gsb_api_key, dbfile, True)
+    with sbl.storage.get_cursor() as dbc:
+        dbc.execute('PRAGMA journal_mode = WAL')
+    sbl.storage.db.commit()
 
-        # download to temporary file name
-        tmp_file = inactive['name'] + '.tmp'
-        logger.info('downloading database to ' + tmp_file)
-        sbl = SafeBrowsingList(gsb_api_key, tmp_file, True)
-        sbl.update_hash_prefix_cache()
-        del sbl
-        logger.info("finished creating " + tmp_file)
+    logger.info('updating database at ' + dbfile)
+    sbl.update_hash_prefix_cache()
 
-        # rename to inactive file name
-        if path.isfile(tmp_file + JOURNAL):
-            rename(tmp_file + JOURNAL, inactive['name'] + JOURNAL)
-            logger.info("renamed " + tmp_file + JOURNAL + ' to ' + inactive['name'] + JOURNAL)
-        rename(tmp_file, inactive['name'])
-        logger.info("renamed " + tmp_file + ' to ' + inactive['name'])
+    logger.info('checkpointing database at ' + dbfile)
+    with sbl.storage.get_cursor() as dbc:
+        dbc.execute('PRAGMA wal_checkpoint(FULL)')
+    sbl.storage.db.commit()
+
+    logger.info("all done!")
 
 
 if __name__ == '__main__':
