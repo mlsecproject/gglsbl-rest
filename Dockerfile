@@ -19,14 +19,11 @@ RUN pip install -r requirements.txt && \
     rm -rf /root/.cache/ && \
     mkdir -p $GSB_DB_DIR && \
     chown -R gglsbl:gglsbl * && \
-    crontab -l | { cat; echo "*/5   *   *   *   *   /sbin/su-exec gglsbl:gglsbl /usr/local/bin/python /home/gglsbl/update.py"; } | crontab -
+    crontab -l | { cat; echo '*/30   *   *   *   *   su gglsbl -s /bin/ash -c "python /home/gglsbl/update.py" >> /proc/1/fd/1 2>&1'; } | crontab -
 
 EXPOSE 5000
 
 # Perform initial DB update, start crond for regular updates then start app.
-ENTRYPOINT  chmod 777 /proc/1/fd && \
-            chmod 777 /proc/1/fd/1 && \
-            chmod 777 /proc/1/fd/2 && \
-            su --group=gglsbl gglsbl python update.py && \
-            crond -L /proc/1/fd/2 && \
-            /sbin/su-exec gglsbl:gglsbl gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
+ENTRYPOINT  su gglsbl -s /bin/ash -c "python /home/gglsbl/update.py" >> /proc/1/fd/1 2>&1 && \
+            crond -L /proc/1/fd/1 && \
+            su-exec gglsbl:gglsbl gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
