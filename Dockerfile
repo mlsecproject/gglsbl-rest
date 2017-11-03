@@ -1,25 +1,29 @@
 FROM python:2.7-alpine3.6
 
-## Create app directory
-RUN mkdir -p /root/gglsbl-rest/db
-WORKDIR /root/gglsbl-rest
-ENV GSB_DB_DIR /root/gglsbl-rest/db
-ENV LOGGING_CONFIG /root/gglsbl-rest/logging.conf
-
-## Copy app files and initial GSB database
-COPY ["requirements.txt", "*.py", "logging.conf", "./"]
-
 # Install necessary OS and Python packages
 RUN apk update && \
     apk upgrade && \
-    pip install -r requirements.txt && \
+    apk add su-exec && \
+    adduser -D -s /sbin/nologin gglsbl
+
+## Populate app directory
+WORKDIR /home/gglsbl
+ENV GSB_DB_DIR /home/gglsbl/db
+COPY ["requirements.txt", "*.py", "logging.conf", "./"]
+ENV LOGGING_CONFIG /home/gglsbl/logging.conf
+
+RUN pip install -r requirements.txt && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \
     rm -rf /root/.cache/ && \
-    crontab -l | { cat; echo "*/30   *   *   *   *   /usr/local/bin/python /root/gglsbl-rest/update.py"; } | crontab -
+    mkdir -p $GSB_DB_DIR && \
+    chown -R gglsbl:gglsbl * && \
+    crontab -l | { cat; echo '*/30   *   *   *   *   su gglsbl -s /bin/ash -c "python /home/gglsbl/update.py" >> /proc/1/fd/1 2>&1'; } | crontab -
 
 EXPOSE 5000
 
 # Perform initial DB update, start crond for regular updates then start app.
-ENTRYPOINT python update.py && crond -L /proc/1/fd/2 && gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
+ENTRYPOINT  su gglsbl -s /bin/ash -c "python /home/gglsbl/update.py" >> /proc/1/fd/1 2>&1 && \
+            crond -L /proc/1/fd/1 && \
+            su-exec gglsbl:gglsbl gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
