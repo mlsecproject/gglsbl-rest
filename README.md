@@ -41,7 +41,7 @@ This will cause the service to listen on port 5000 of the host machine. Please r
 
 You can run `docker logs --follow <container name/ID>` to tail the output and determine when the gunicorn workers start, if necessary.
 
-In production, you might want to mount `/root/gglsbl-rest/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for improved performance. Recommended size is 4+ gigabytes, which is roughly twice of a freshly initialized database, but YMMV.
+In production, you might want to mount `/home/gglsbl/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for improved performance. Recommended size is 4+ gigabytes, which is roughly twice of a freshly initialized database, but YMMV.
 
 ## Querying the REST Service
 
