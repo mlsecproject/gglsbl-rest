@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.0 (2017-11-03)
+- Run update.py and main gunicorn process as a regular `gglsbl` user instead of root for added security. 
+
 ## v1.4.0 (2017-10-30)
 - Use a single database in sqlite WAL mode (#10);
 - Default value of WORKERS is now 8 per detected CPU core plus one.
