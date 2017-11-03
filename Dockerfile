@@ -1,6 +1,6 @@
 FROM python:2.7-alpine3.6
 
-# Install necessary OS and Python packages
+# Install necessary OS packages and create non-root user for service
 RUN apk update && \
     apk upgrade && \
     apk add su-exec && \
@@ -12,6 +12,7 @@ ENV GSB_DB_DIR /home/gglsbl/db
 COPY ["requirements.txt", "*.py", "logging.conf", "./"]
 ENV LOGGING_CONFIG /home/gglsbl/logging.conf
 
+# Install Python packages, cleanup, set permissions and configure crontab
 RUN pip install -r requirements.txt && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /var/cache/apk/* && \

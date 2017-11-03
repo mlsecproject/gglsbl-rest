@@ -10,7 +10,9 @@ The main challenge with running gglsbl in a REST service is that the process of 
 
 So what gglsbl-rest does since version 1.4.0 is to set the sqlite database to [write-ahead logging](https://sqlite.org/wal.html) mode so that readers and writers can work concurrently. A cron job runs every 30 minutes to update the database and then performs a [full checkpoint](https://sqlite.org/pragma.html#pragma_wal_checkpoint) to ensure readers have optimal performance.
 
-Versions before 1.4.0 maintained two sets of files on disk and switched between them, which is why the status endpoint has the output format it does. But the current approach has many advantages, as it reuses fresh downloaded data across updates and cached full hash data.
+Versions before 1.4.0 maintained two sets of files on disk and switched between them, which is why the status endpoint has the output format lists "alternatives". But the current approach has many advantages, as it reuses fresh downloaded data across updates and cached full hash data.
+
+For security reasons, even though `crond` is run as `root`, both the background task of updating the database and the [gunicorn](https://pypi.python.org/pypi/gunicorn) process are executed as a non-root user called `gglsbl`.
 
 ## Environment Variables
 
