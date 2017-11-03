@@ -91,7 +91,7 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/status"
       "active": true,
       "ctime": "2017-10-30T20:20:55+0000", 
       "mtime": "2017-10-30T20:20:55+0000", 
-      "name": "/root/gglsbl-rest/db/sqlite.db", 
+      "name": "/home/gglsbl/db/sqlite.db", 
       "size": 2079985664
     }
   ], 
