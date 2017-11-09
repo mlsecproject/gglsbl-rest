@@ -32,6 +32,8 @@ The configuration of the REST service can be done using the following environmen
 
 * `MAX_RETRIES` controls how many times the service should retry performing the request if an error occurs. Defaults to 3.
 
+* `HTTPS_PROXY` sets the proxy URL if the service is running behind a proxy. Not set by default. (HTTP_PROXY is not necessary as gglsbl-rest only queries HTTPS URLs)
+
 ## Running
 
 You can run the latest automated build from [Docker Hub](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) as follows:
