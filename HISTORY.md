@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.1 (2017-12-14)
+- Use alpine:3.7 as base image directly for latest package and OS updates.
+
 ## v1.5.0 (2017-11-03)
 - Run update.py and main gunicorn process as a regular `gglsbl` user instead of root for added security. 
 
