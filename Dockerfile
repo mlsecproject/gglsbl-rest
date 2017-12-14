@@ -1,9 +1,9 @@
-FROM python:2.7-alpine3.6
+FROM alpine:3.7
 
 # Install necessary OS packages and create non-root user for service
 RUN apk update && \
     apk upgrade && \
-    apk add su-exec && \
+    apk add -u python py2-pip su-exec && \
     adduser -D -s /sbin/nologin gglsbl
 
 ## Populate app directory
@@ -13,7 +13,8 @@ COPY ["requirements.txt", "*.py", "logging.conf", "./"]
 ENV LOGGING_CONFIG /home/gglsbl/logging.conf
 
 # Install Python packages, cleanup, set permissions and configure crontab
-RUN pip install -r requirements.txt && \
+RUN pip install --upgrade setuptools && \
+    pip install -r requirements.txt && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \
