@@ -1,4 +1,4 @@
 flask==0.12.2
-gglsbl==1.4.8
-pid==2.1.1
+gglsbl==1.4.10
+pid==2.2.0
 gunicorn==19.7.1

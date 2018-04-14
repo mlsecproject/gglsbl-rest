@@ -7,19 +7,14 @@ from pid.decorator import pidfile
 # basic app configuration and options
 gsb_api_key = environ['GSB_API_KEY']
 dbfile = path.join(environ.get('GSB_DB_DIR', '/tmp'), 'sqlite.db')
-environment = environ.get('ENVIRONMENT', 'prod').lower()
 logger = logging.getLogger('update')
-JOURNAL = '.update-journal'
 
 
 # function that updates the hash prefix cache if necessary
-@pidfile(piddir='/tmp')
+@pidfile(piddir=environ.get('GSB_DB_DIR', '/tmp'))
 def update_hash_prefix_cache():
     logger.info('opening database at ' + dbfile)
     sbl = SafeBrowsingList(gsb_api_key, dbfile, True)
-    with sbl.storage.get_cursor() as dbc:
-        dbc.execute('PRAGMA journal_mode = WAL')
-    sbl.storage.db.commit()
 
     logger.info('updating database at ' + dbfile)
     sbl.update_hash_prefix_cache()
