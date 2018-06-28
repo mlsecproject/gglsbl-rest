@@ -1,4 +1,4 @@
-flask==0.12.2
-gglsbl==1.4.10
+flask==1.0.2
+gglsbl==1.4.11
 pid==2.2.0
-gunicorn==19.7.1
+gunicorn==19.8.1
