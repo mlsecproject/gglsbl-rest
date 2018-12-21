@@ -1,5 +1,11 @@
 # gglsbl-rest
 
+## v1.5.2 (2018-12-21)
+- Use alpine:3.8 as base image directly for latest package and OS updates;
+- Update dependencies: gglsbl 1.4.14, and gunicorn 19.9.0;
+- Replace use of crond with apscheduler Python package to run regular updates;
+- Since crond is not longer used, no processes need to run as root and we can use `USER` Dockerfile directive to drop privileges.
+
 ## v1.5.1 (2017-12-14)
 - Use alpine:3.7 as base image directly for latest package and OS updates.
 

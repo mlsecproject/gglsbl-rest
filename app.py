@@ -1,12 +1,14 @@
+from os import environ, path
+from subprocess import Popen
+
 import logging.config
 import time
-from os import environ, path
-
 from flask import Flask, request, jsonify, abort
 from gglsbl import SafeBrowsingList
-from multiprocessing import cpu_count
+
 
 # basic app configuration and options
+logging.config.fileConfig('logging.conf')
 app = Flask("gglsbl-rest")
 gsb_api_key = environ['GSB_API_KEY']
 dbfile = path.join(environ.get('GSB_DB_DIR', '/tmp'), 'sqlite.db')
@@ -76,7 +78,9 @@ def status_page():
     return jsonify(retval)
 
 
-# run internal Flask server if executed directly
+# run development Flask server if executed directly
 if __name__ == '__main__':
-    logging.config.fileConfig('logging.conf')
-    app.run(processes=int(environ.get('WORKERS', cpu_count() * 2 + 1)))
+    po = Popen("python update.py", shell=True)
+    po.wait()
+    app.env = 'development'
+    app.run(processes=1, host="0.0.0.0", port=5001, debug=True)
