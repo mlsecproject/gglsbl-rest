@@ -1,10 +1,22 @@
 # gglsbl-rest
 
-## v1.5.2 (2018-12-21)
+## v1.5.5 (2018-12-21)
 - Use alpine:3.8 as base image directly for latest package and OS updates;
 - Update dependencies: gglsbl 1.4.14, and gunicorn 19.9.0;
 - Replace use of crond with apscheduler Python package to run regular updates;
 - Since crond is not longer used, no processes need to run as root and we can use `USER` Dockerfile directive to drop privileges.
+
+## v1.5.4 (2018-06-28)
+- Upgrade Flask to 1.0.2;
+- Upgrade gglsbl to 1.4.11;
+- Upgrade gunicorn to 19.8.1.
+
+## v1.5.3 (2018-04-14)
+- Upgraded to gglsbl-rest 1.4.10 and pid 2.2.0;
+- Removed dead code and unnecessary WAL mode setting from update.py.
+
+## v1.5.2 (2018-03-07)
+- Updated gglsbl to version 1.4.8 for [fixes and improvements](https://github.com/afilipovich/gglsbl/releases).
 
 ## v1.5.1 (2017-12-14)
 - Use alpine:3.7 as base image directly for latest package and OS updates.
