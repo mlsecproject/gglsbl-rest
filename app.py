@@ -43,7 +43,7 @@ def _lookup(url, api_key, retry=1):
 @app.route('/gglsbl/v1/lookup/<path:url>', methods=['GET'])
 def app_lookup(url):
     # input validation
-    if not isinstance(url, (str, unicode)):
+    if not isinstance(url, str):
         abort(400)
 
     # find out which API key to use
