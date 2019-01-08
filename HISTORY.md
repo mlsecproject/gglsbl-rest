@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.6 (2019-01-08)
+- Migrate to Python 3.
+
 ## v1.5.5 (2018-12-21)
 - Use alpine:3.8 as base image directly for latest package and OS updates;
 - Update dependencies: gglsbl 1.4.14, and gunicorn 19.9.0;

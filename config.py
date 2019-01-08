@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 
 def update():
     log.info("Starting update process...")
-    po = Popen("python update.py", shell=True)
+    po = Popen("python3 update.py", shell=True)
     log.info("Update started as PID %d", po.pid)
     rc = po.wait()
     log.info("Update process finished with status code %d", rc)
@@ -28,7 +28,7 @@ def update():
 
 def on_starting(server):
     log.info("Initial database load...")
-    po = Popen("python update.py", shell=True)
+    po = Popen("python3 update.py", shell=True)
     log.info("Update started as PID %d", po.pid)
     rc = po.wait()
     log.info("Update process finished with status code %d", rc)
