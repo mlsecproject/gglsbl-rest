@@ -1,5 +1,9 @@
 # gglsbl-rest
 
+## v1.5.7 (2019-02-01)
+- Use alpine:3.9 for latest OS updates;
+- Upgrade pid to 2.2.1.
+
 ## v1.5.6 (2019-01-08)
 - Migrate to Python 3.
 
