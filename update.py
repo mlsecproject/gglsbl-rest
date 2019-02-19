@@ -2,7 +2,6 @@ import logging.config
 from os import environ, path
 
 from gglsbl import SafeBrowsingList
-from pid.decorator import pidfile
 
 # basic app configuration and options
 gsb_api_key = environ['GSB_API_KEY']
@@ -11,7 +10,6 @@ logger = logging.getLogger('update')
 
 
 # function that updates the hash prefix cache if necessary
-@pidfile(piddir=environ.get('GSB_DB_DIR', '/tmp'))
 def update_hash_prefix_cache():
     logger.info('opening database at ' + dbfile)
     sbl = SafeBrowsingList(gsb_api_key, dbfile, True)

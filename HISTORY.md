@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.8 (2019-02-15)
+- Removed use of pid package since APScheduler max_instances=1 should already prevent concurrent executions of the update process.
+
 ## v1.5.7 (2019-02-01)
 - Use alpine:3.9 for latest OS updates;
 - Upgrade pid to 2.2.1.

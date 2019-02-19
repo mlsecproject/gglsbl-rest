@@ -26,6 +26,8 @@ def update():
     log.info("Update process finished with status code %d", rc)
 
 
+sched = None
+
 def on_starting(server):
     log.info("Initial database load...")
     po = Popen("python3 update.py", shell=True)
@@ -34,6 +36,7 @@ def on_starting(server):
     log.info("Update process finished with status code %d", rc)
 
     log.info("Starting scheduler...")
+    global sched
     sched = BackgroundScheduler(timezone="UTC")
     sched.start()
     sched.add_job(update, id="update", coalesce=True, max_instances=1, trigger='interval', minutes=30)

@@ -1,5 +1,4 @@
 flask==1.0.2
 apscheduler==3.5.3
 gglsbl==1.4.14
-pid==2.2.1
 gunicorn==19.9.0
