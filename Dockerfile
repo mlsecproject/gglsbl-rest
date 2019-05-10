@@ -22,6 +22,9 @@ RUN pip3 install --upgrade pip setuptools && \
     mkdir -p $GSB_DB_DIR && \
     chown -R gglsbl:gglsbl *
 
+# CVE-2019-5021
+RUN sed -i -e 's/^root::/root:!:/' /etc/shadow
+
 # Run as a non-root user for security
 USER gglsbl:gglsbl
 

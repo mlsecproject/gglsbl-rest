@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.9 (2019-05-10)
+Mitigate CVE-2019-5021 as per https://alpinelinux.org/posts/Docker-image-vulnerability-CVE-2019-5021.html
+
 ## v1.5.8 (2019-02-15)
 - Removed use of pid package since APScheduler max_instances=1 should already prevent concurrent executions of the update process.
 
