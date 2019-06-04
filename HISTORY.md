@@ -1,6 +1,6 @@
 # gglsbl-rest
 
-## v1.5.19 (2019-06-04)
+## v1.5.10 (2019-06-04)
 Updated dependencies Flask (1.0.3), APScheduler (3.6.0) and gglsbl (1.4.15).
 
 ## v1.5.9 (2019-05-10)
