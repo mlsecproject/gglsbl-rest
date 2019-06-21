@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.11 (2019-06-21)
+Use alpine:3.10 for latest OS updates.
+
 ## v1.5.10 (2019-06-04)
 Updated dependencies Flask (1.0.3), APScheduler (3.6.0) and gglsbl (1.4.15).
 
