@@ -1,11 +1,10 @@
 from os import environ, path
-from subprocess import Popen
 
 import logging.config
 import time
 from flask import Flask, request, jsonify, abort
 from gglsbl import SafeBrowsingList
-
+from subprocess import Popen
 
 # basic app configuration and options
 logging.config.fileConfig('logging.conf')
@@ -53,29 +52,27 @@ def app_lookup(url):
         abort(401)
 
     # look up URL
-    resp = _lookup(url, api_key)
-    if resp:
-        matches = [{'threat': x.threat_type, 'platform': x.platform_type,
-                    'threat_entry': x.threat_entry_type} for x in resp]
-        return jsonify({'url': url, 'matches': matches})
+    matches = _lookup(url, api_key)
+    if matches:
+        return jsonify(url=url, matches=[{'threat': x.threat_type, 'platform': x.platform_type,
+                                          'threat_entry': x.threat_entry_type} for x in matches])
     else:
-        abort(404)
+        resp = jsonify(url=url, matches=[])
+        resp.status_code = 404
+        return resp
 
 
 @app.route('/gglsbl/status', methods=['GET'])
 @app.route('/gglsbl/v1/status', methods=['GET'])
 def status_page():
-    retval = {
-        'environment': environment,
-        'alternatives': [{
-            'active': True,
-            'name': dbfile,
-            'mtime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getmtime(dbfile))),
-            'ctime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getctime(dbfile))),
-            'size': path.getsize(dbfile)
-        }]
-    }
-    return jsonify(retval)
+    return jsonify(environment=environment,
+                   alternatives=[{
+                       'active': True,
+                       'name': dbfile,
+                       'mtime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getmtime(dbfile))),
+                       'ctime': time.strftime('%Y-%m-%dT%H:%M:%S%z', time.gmtime(path.getctime(dbfile))),
+                       'size': path.getsize(dbfile)
+                   }])
 
 
 # run development Flask server if executed directly

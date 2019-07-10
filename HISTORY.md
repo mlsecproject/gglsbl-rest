@@ -1,5 +1,9 @@
 # gglsbl-rest
 
+## v1.5.12 (2019-07-10)
+* Updated dependencies to Flask 1.1.1, which fixes a logging issue where some log entries were being duplicated.
+* Updated body of 404 response when no matches are found by gglsbl to contain the same JSON format as the 200 response.
+
 ## v1.5.11 (2019-06-21)
 Use alpine:3.10 for latest OS updates.
 

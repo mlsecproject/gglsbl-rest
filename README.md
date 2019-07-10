@@ -1,4 +1,4 @@
-[![docker stars](https://img.shields.io/docker/stars/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) [![docker pulls](https://img.shields.io/docker/pulls/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) [![docker build status](https://img.shields.io/docker/build/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) [![Dependency Status](https://dependencyci.com/github/mlsecproject/gglsbl-rest/badge)](https://dependencyci.com/github/mlsecproject/gglsbl-rest)
+[![docker stars](https://img.shields.io/docker/stars/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) [![docker pulls](https://img.shields.io/docker/pulls/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) [![docker build status](https://img.shields.io/docker/build/mlsecproject/gglsbl-rest.svg)](https://hub.docker.com/r/mlsecproject/gglsbl-rest/)
 
 # gglsbl-rest
 
@@ -49,9 +49,9 @@ In production, you might want to mount `/home/gglsbl/db` in a [tmpfs RAM disk](h
 
 The REST service will respond to queries for `/gglsbl/v1/lookup/<URL>`. Make sure you [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the URL you are querying. If no sign of maliciousness is found, the service will return with a 404 status. Otherwise, a 200 response with a JSON body is returned to describe it.
 
-Here's an example query and response:
+Here's an example query and response to a test URL where matches are guaranteed to be found, pretty formatted using [jq](https://stedolan.github.io/jq/):
 ```bash
-$ curl "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Ftestsafebrowsing.appspot.com%2Fapiv4%2FANY_PLATFORM%2FSOCIAL_ENGINEERING%2FURL%2F"
+$ curl "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Ftestsafebrowsing.appspot.com%2Fapiv4%2FANY_PLATFORM%2FSOCIAL_ENGINEERING%2FURL%2F" | jq
 {
   "matches": [
     {
@@ -65,17 +65,22 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Ftestsafebrowsing.app
       "threat_entry": "URL"
     },
     {
-      "platform": "CHROME",
-      "threat": "SOCIAL_ENGINEERING",
-      "threat_entry": "URL"
-    },
-    {
       "platform": "LINUX",
       "threat": "SOCIAL_ENGINEERING",
       "threat_entry": "URL"
     },
     {
+      "platform": "OSX",
+      "threat": "SOCIAL_ENGINEERING",
+      "threat_entry": "URL"
+    },
+    {
       "platform": "ALL_PLATFORMS",
+      "threat": "SOCIAL_ENGINEERING",
+      "threat_entry": "URL"
+    },
+    {
+      "platform": "CHROME",
       "threat": "SOCIAL_ENGINEERING",
       "threat_entry": "URL"
     }
@@ -84,9 +89,22 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Ftestsafebrowsing.app
 }
 ```
 
+Here's an example lookup of google.com which should yield no matches (notice the 404 status code):
+```bash
+$ curl -i "http://127.0.0.1:5000/gglsbl/v1/lookup/http%3A%2F%2Fgoogle.com"
+HTTP/1.1 404 NOT FOUND
+Server: gunicorn/19.9.0
+Date: Wed, 10 Jul 2019 21:41:21 GMT
+Connection: close
+Content-Type: application/json
+Content-Length: 41
+
+{"matches":[],"url":"http://google.com"}
+```
+
 There' an additional `/gglsbl/v1/status` URL that you can access to check if the service is running and also get some indication of how old the current sqlite database is:
 ```bash
-$ curl "http://127.0.0.1:5000/gglsbl/v1/status"
+$ curl "http://127.0.0.1:5000/gglsbl/v1/status" | jq
 {
   "alternatives": [
     {
