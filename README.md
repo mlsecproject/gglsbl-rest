@@ -119,8 +119,12 @@ $ curl "http://127.0.0.1:5000/gglsbl/v1/status" | jq
 }
 ```
 
+A much more convenient way to query the service from the command-line, though, is to use [gglsbl-rest-client](https://github.com/seanmcfeely/gglsbl-rest-client), maintained by [Sean McFeely](https://github.com/seanmcfeely).
+
+
 ## Who's using gglsbl-rest
 
 * [neonknight](https://github.com/neonknight) reports gglsbl-rest is used as a bridge between the [fuglu mail filter engine](https://gitlab.com/fumail/fuglu) and Google Safebrowsing API through a [plug-in](https://gitlab.com/fumail/fuglu-extra-plugins/blob/master/safebrowsing/gglsbl.py).
+* [Sean McFeely](https://github.com/seanmcfeely) reports gglsbl-rest is used in [ACE - Analysis Correlation Engine](https://github.com/ace-ecosystem/ACE) to help security analysts perform their activities in a more automated manner, including Google Safebrowsing API lookup of URLs.
 
 If your project or company are using gglsbl-rest and you would like them to be listed here, please open a [GitHub issue](https://github.com/mlsecproject/gglsbl-rest/issues) and we'll include you.
