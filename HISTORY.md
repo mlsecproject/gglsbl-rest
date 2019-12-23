@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.15 (2019-12-23)
+Updated to Alpine 3.11.
+
 ## v1.5.14 (2019-12-09)
 Updated to Alpine 3.10.3, APScheduler 3.6.3 and gunicorn 20.0.4 for functional and security fixes.
 
