@@ -1,7 +1,7 @@
 jobs:
   build:
     docker:
-      - image: docker:18.09-git
+      - image: docker:git
     steps:
       - checkout
       - run:
@@ -26,5 +26,11 @@ jobs:
 workflows:
   version: 2
   release:
+    jobs:
+      - build
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
     jobs:
       - build
