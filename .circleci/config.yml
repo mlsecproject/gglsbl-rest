@@ -1,4 +1,3 @@
-$ cat .circleci/config.yml
 jobs:
   build:
     docker:
