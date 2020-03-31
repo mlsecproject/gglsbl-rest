@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.17 (2020-03-31)
+Updated to Alpine 3.11.5.
+
 ## v1.5.16 (2020-01-23)
 Updated to Alpine 3.11.3.
 
