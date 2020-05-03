@@ -1,4 +1,4 @@
-flask==1.1.1
+flask==1.1.2
 apscheduler==3.6.3
 gglsbl==1.4.15
 gunicorn==20.0.4

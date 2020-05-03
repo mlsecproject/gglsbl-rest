@@ -23,7 +23,7 @@ jobs:
             mv trivy /usr/local/bin
       - run:
           name: Scan the local image with trivy
-          command: trivy --exit-code 0 --no-progress --output /tmp/trivy.txt trivy-ci-test:${CIRCLE_SHA1}
+          command: trivy --exit-code 1 --severity MEDIUM,HIGH,CRITICAL --no-progress --output /tmp/trivy.txt trivy-ci-test:${CIRCLE_SHA1}
       - store_artifacts:
           path: /tmp/trivy.txt
 workflows:

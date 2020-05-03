@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.18 (2020-05-03)
+Updated to Alpine 3.11.6 and flask 1.1.2.
+
 ## v1.5.17 (2020-03-31)
 Updated to Alpine 3.11.5.
 
