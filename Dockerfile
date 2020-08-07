@@ -1,4 +1,4 @@
-FROM alpine:3.11.6
+FROM alpine:3.12
 
 # Install necessary OS packages and create non-root user for service
 RUN apk update && \
