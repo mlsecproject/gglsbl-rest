@@ -1,0 +1,10 @@
+name: gglsbl
+services:
+  rest:
+    public: true
+    image: okteto.dev/gglsbl:${OKTETO_GIT_COMMIT}
+    build: .
+    environment:
+        - GSB_API_KEY=${GSB_API_KEY}
+    ports:
+      - 5000

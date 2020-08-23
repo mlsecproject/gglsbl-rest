@@ -36,6 +36,8 @@ The configuration of the REST service can be done using the following environmen
 
 ## Running
 
+### Docker
+
 You can run the latest automated build from [Docker Hub](https://hub.docker.com/r/mlsecproject/gglsbl-rest/) as follows:
 ```bash
 docker run -e GSB_API_KEY=<your API key> -p 127.0.0.1:5000:5000 mlsecproject/gglsbl-rest 
@@ -45,7 +47,37 @@ This will cause the service to listen on port 5000 of the host machine. Please r
 
 You can run `docker logs --follow <container name/ID>` to tail the output and determine when the gunicorn workers start, if necessary.
 
+### Okteto Cloud
+
+First, [add a secret](https://okteto.com/docs/cloud/secrets) to your Okteto Cloud namespace with the value of your `GSB_API_KEY` key.
+
+Next, click on the following button to deploy the application:
+
+[![Develop on Okteto](https://okteto.com/develop-okteto.svg)](https://cloud.okteto.com/deploy?repository=https://github.com/mlsecproject/gglsbl-rest)
+
+
+This will execute an automated pipeline that will make the service to listen on https://rest-[YOUR-GITHUB-ID].cloud.okteto.net/port. Please realize that when the service first starts it downloads a new local partial hash database from scratch before starting the REST service. So it might take several minutes to become available. 
+
+You can see the logs from the Okteto Cloud dashboard to determine when the gunicorn workers start, if necessary.
+
+Once the application is running on Okteto Cloud, you can develop it by executing the following commands:
+
+```
+$ okteto up
+ ✓  Development container activated
+ ✓  Files synchronized
+    Namespace: YOUR-GITHUB-ID
+    Name:      rest
+    Forward:   5000 -> 5000
+
+Welcome to your development container. Happy coding!
+YOUR-GITHUB-ID:rest okteto> pip install -r requirements.txt
+YOUR-GITHUB-ID:rest okteto> python app.py
+
+### Production
+
 In production, you might want to mount `/home/gglsbl/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for improved performance. Recommended size is 4+ gigabytes, which is roughly twice of a freshly initialized database, but YMMV.
+
 
 ## Querying the REST Service
 
