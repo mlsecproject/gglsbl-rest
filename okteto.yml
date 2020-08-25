@@ -13,3 +13,5 @@ resources:
     memory: 2Gi
 volumes:
   - /root/.cache/
+persistentVolume:
+  enabled: true
