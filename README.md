@@ -78,7 +78,6 @@ YOUR-GITHUB-ID:rest okteto> python app.py
 
 In production, you might want to mount `/home/gglsbl/db` in a [tmpfs RAM disk](https://docs.docker.com/engine/admin/volumes/tmpfs/) for improved performance. Recommended size is 4+ gigabytes, which is roughly twice of a freshly initialized database, but YMMV.
 
-
 ## Querying the REST Service
 
 The REST service will respond to queries for `/gglsbl/v1/lookup/<URL>`. Make sure you [percent encode](https://en.wikipedia.org/wiki/Percent-encoding) the URL you are querying. If no sign of maliciousness is found, the service will return with a 404 status. Otherwise, a 200 response with a JSON body is returned to describe it.

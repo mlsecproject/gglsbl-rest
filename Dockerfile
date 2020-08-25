@@ -9,7 +9,7 @@ RUN apk update && \
 ## Populate app directory
 WORKDIR /home/gglsbl
 ENV GSB_DB_DIR /home/gglsbl/db
-COPY ["requirements.txt", "*.py", "logging.conf", "./"]
+COPY ["requirements.txt", "./"]
 ENV LOGGING_CONFIG /home/gglsbl/logging.conf
 
 # Install Python packages, cleanup and set permissions
@@ -29,6 +29,8 @@ RUN sed -i -e 's/^root::/root:!:/' /etc/shadow
 USER gglsbl:gglsbl
 
 EXPOSE 5000
+
+COPY ["*.py", "logging.conf", "./"]
 
 # Start app
 ENTRYPOINT exec gunicorn --config config.py --log-config ${LOGGING_CONFIG} app:app
