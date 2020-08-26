@@ -55,8 +55,7 @@ Next, click on the following button to deploy the application:
 
 [![Develop on Okteto](https://okteto.com/develop-okteto.svg)](https://cloud.okteto.com/deploy?repository=https://github.com/mlsecproject/gglsbl-rest)
 
-
-This will execute an automated pipeline that will make the service to listen on https://rest-[YOUR-GITHUB-ID].cloud.okteto.net/port. Please realize that when the service first starts it downloads a new local partial hash database from scratch before starting the REST service. So it might take several minutes to become available. 
+This will execute an automated pipeline that will make the service listen on https://rest-[YOUR-GITHUB-ID].cloud.okteto.net/port. Please realize that when the service first starts it downloads a new local partial hash database from scratch before starting the REST service. So it might take several minutes to become available. 
 
 You can see the logs from the Okteto Cloud dashboard to determine when the gunicorn workers start, if necessary.
 
@@ -73,6 +72,7 @@ $ okteto up
 Welcome to your development container. Happy coding!
 YOUR-GITHUB-ID:rest okteto> pip install -r requirements.txt
 YOUR-GITHUB-ID:rest okteto> python app.py
+```
 
 ### Production
 
