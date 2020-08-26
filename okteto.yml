@@ -1,0 +1,17 @@
+name: rest
+image: okteto/python:3
+command:
+    - bash
+    - -c
+    - python3 -m venv env && source env/bin/activate && bash
+workdir: /okteto
+forward:
+  - 5000:5000
+resources:
+  limits:
+    cpu: "1"
+    memory: 2Gi
+volumes:
+  - /root/.cache/
+persistentVolume:
+  enabled: true

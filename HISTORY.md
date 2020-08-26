@@ -1,5 +1,10 @@
 # gglsbl-rest
 
+## v1.5.20 (2020-08-26)
+Contribution from @pchico83:
+* Added support for running on Okteto Cloud;
+* Improved docker build time by streamlining Dockerfile.
+
 ## v1.5.19 (2020-08-07)
 Updated to Alpine 3.12.
 

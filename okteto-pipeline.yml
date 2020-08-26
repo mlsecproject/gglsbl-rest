@@ -1,0 +1,5 @@
+deploy:
+  - okteto build -t okteto.dev/gglsbl:${OKTETO_GIT_COMMIT} .
+  - okteto stack deploy
+devs:
+  - okteto.yml
