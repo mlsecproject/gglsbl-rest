@@ -3,7 +3,7 @@ FROM alpine:3.12
 # Install necessary OS packages and create non-root user for service
 RUN apk update && \
     apk upgrade && \
-    apk add -u python3 py3-pip && \
+    apk add -u python3 py3-pip py3-setuptools py3-wheel py3-multidict py3-yarl py3-flask py3-gunicorn && \
     adduser -D -s /sbin/nologin gglsbl
 
 ## Populate app directory
@@ -13,8 +13,7 @@ COPY ["requirements.txt", "./"]
 ENV LOGGING_CONFIG /home/gglsbl/logging.conf
 
 # Install Python packages, cleanup and set permissions
-RUN pip3 install --upgrade pip setuptools && \
-    pip3 install -r requirements.txt && \
+RUN pip3 install -r requirements.txt && \
     rm -rf /root/.cache/pip/* && \
     rm -rf /var/cache/apk/* && \
     rm -rf /tmp/* && \

@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.21 (2020-09-29)
+Install yarl, multidict, flask and gunicorn with Alpine packages instead of using pip to avoid PEP 517 issues.
+
 ## v1.5.20 (2020-08-26)
 Contribution from @pchico83:
 * Added support for running on Okteto Cloud;

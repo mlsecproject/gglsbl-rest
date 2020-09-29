@@ -1,4 +1,6 @@
-flask==1.1.2
+# Installed using Alpine packages
+#flask==1.1.2
+#gunicorn==20.0.4
+
 apscheduler==3.6.3
 gglsbl==1.4.15
-gunicorn==20.0.4
