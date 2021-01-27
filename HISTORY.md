@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.22 (2021-01-27)
+Updated to Alpine 3.13 and APScheduler 3.7.0.
+
 ## v1.5.21 (2020-09-29)
 Install yarl, multidict, flask and gunicorn with Alpine packages instead of using pip to avoid PEP 517 issues.
 

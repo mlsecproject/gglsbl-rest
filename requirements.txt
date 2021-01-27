@@ -2,5 +2,5 @@
 #flask==1.1.2
 #gunicorn==20.0.4
 
-apscheduler==3.6.3
+apscheduler==3.7.0
 gglsbl==1.4.15
