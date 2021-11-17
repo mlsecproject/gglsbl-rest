@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.24 (2021-11-17)
+Updated to Alpine 3.14.3 and APScheduler 3.8.1.
+
 ## v1.5.23 (2021-06-02)
 Updated to Alpine 3.13.5 for a variety of CVE fixes, such as CVE-2021-3449 , CVE-2021-3450 and CVE-2021-3177.
 
