@@ -1,5 +1,8 @@
 # gglsbl-rest
 
+## v1.5.25
+Updated to Alpine 3.15.
+
 ## v1.5.24 (2021-11-17)
 Updated to Alpine 3.14.3 and APScheduler 3.8.1.
 
